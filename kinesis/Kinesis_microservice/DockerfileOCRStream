@@ -1,0 +1,13 @@
+FROM python:3.6-alpine
+
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+COPY app/ /usr/src/app
+
+RUN apk add --no-cache git gcc python3-dev gpgme-dev libc-dev
+
+RUN pip install -r kinesis_consumer/requirements.txt
+
+CMD ["python", "kinesis_consumer/kinesis_ocr_stream.py"]

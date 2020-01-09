@@ -1,0 +1,18 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kinesis-microservice-ocr-stream-deployment
+spec:
+  revisionHistoryLimit: 2
+  replicas: 1
+  selector:
+    matchLabels:
+      component: kinesis-microservice-ocr-stream-pod
+  template:
+    metadata:
+      labels:
+        component: kinesis-microservice-ocr-stream-pod
+    spec:
+      containers:
+      - name: kinesis-microservice-ocr-stream-container
+        image: <ACCOUNT>.dkr.ecr.<REGION>.amazonaws.com/<REPO>:<TAG>
