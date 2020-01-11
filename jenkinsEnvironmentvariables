@@ -1,7 +1,7 @@
 pipeline {
     agent any
      environment {
-        KINESIS_STATUS_DATA_STREAM = env.KINESIS_STATUS_DATA_STREAM
+        KINESIS_STATUS_DATA_STREAM = "${env.KINESIS_DATA_STREAM_STATUS}"
     }
     stages { 
         stage('Environment variables') {
