@@ -1,12 +1,16 @@
 pipeline {
     agent any
+     environment {
+        DISABLE_AUTH = 'true'
+        DB_ENGINE    = 'sqlite'
+    }
     stages { 
         stage('Environment variables') {
             
             steps {
 			
             	echo "Updating Configs"
-                sh "sed -i 's@<KINESIS_STATUS_DATA_STREAM>@$KINESIS_STATUS_DATA_STREAM@g' app/kinesis_consumer/status_config.py"
+                echo "Database engine is ${DB_ENGINE}"
                 
             }
         }
