@@ -10,7 +10,7 @@ pipeline {
             steps {
 			
             	echo "Updating Configs"
-                echo "Database engine is ${DB_ENGINE}"
+                echo "Database engine is ${env.KINESIS_STATUS_DATA_STREAM}"
                 
             }
         }
