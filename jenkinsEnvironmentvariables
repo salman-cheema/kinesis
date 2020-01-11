@@ -1,9 +1,7 @@
 pipeline {
     agent any
     environment { 
-        ECR_REPO    = "${env.ENV}-${env.TEAM}-${env.TF_ECR_KINESIS_STATUS}"
-        IMAGE_TAG   = "${env.BUILD_NUMBER}"
-        KINESIS_STATUS_DATA_STREAM = "${env.ENV}-${env.TEAM}-${env.TF_KINESIS_DATA_STREAM_STATUS}"
+        KINESIS_STATUS_DATA_STREAM = "${env.KINESIS_DATA_STREAM_STATUS}"
     }
     stages { 
         stage('Environment variables') {
@@ -12,7 +10,6 @@ pipeline {
 			
             	echo "Updating Configs"
                 sh "sed -i 's@<KINESIS_STATUS_DATA_STREAM>@$KINESIS_STATUS_DATA_STREAM@g' app/kinesis_consumer/status_config.py"
-                echo KINESIS_STATUS_DATA_STREAM
                 sh "sed -i 's@<API_GATEWAY_KINESIS>@$TF_API_GATEWATY_URL_KINESIS@g' app/kinesis_consumer/status_config.py"
                 sh "sed -i 's@<WORKFLOW_HOSTNAME>@$MICROSERVICE_HOSTNAME_WORKFLOW@g' app/kinesis_consumer/status_config.py"
                 sh "sed -i 's@<WORKFLOW_PORT>@$MICROSERVICE_PORT_WORKFLOW@g' app/kinesis_consumer/status_config.py"
