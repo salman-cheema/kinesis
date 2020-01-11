@@ -1,15 +1,12 @@
 pipeline {
     agent any
-     environment {
-        KINESIS_STATUS_DATA_STREAM = "${env.KINESIS_STATUS_DATA_STREAM}"
-    }
     stages { 
         stage('Environment variables') {
             
             steps {
 			
             	echo "Updating Configs"
-                echo "Database engine is ${KINESIS_STATUS_DATA_STREAM}"
+                echo "Database engine is ${env.KINESIS_STATUS_DATA_STREAM}"
                 
             }
         }
