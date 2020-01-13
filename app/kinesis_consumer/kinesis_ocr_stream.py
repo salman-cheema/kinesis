@@ -36,7 +36,8 @@ while True:
             response_records = get_records(kinesis_ocr_url, shard_iterator)
             if const.RECORDS in response_records:
                 for record in response_records[const.RECORDS]:
-                    message = base64.b64decode(record[const.DATA]).decode(const.UTF_8)
+                    message = base64.b64decode(
+                        record[const.DATA]).decode(const.UTF_8)
                     sequence_number = record[const.SEQUENCE_NUMBER]
                     shard_sequence_numbers[shards[i]] = sequence_number
                     logger.info(const.NEW_MESSAGE)
@@ -47,7 +48,12 @@ while True:
                         json.dump(shard_sequence_numbers, outfile, indent=4)
             else:
                 logger.error(str(response_records))
-            shard_iterators[i] = response_records[const.NEXT_SHARD_ITERATOR]
+            if response_records.get('__type') == 'ExpiredIteratorException':
+                # Get shards
+                shard_iterators, shard_sequence_numbers, shards = \
+                    get_shard_iterators(kinesis_ocr_url, config.STREAM_NAME)
+            else:
+                shard_iterators[i] = response_records[const.NEXT_SHARD_ITERATOR]
 
             # To manage throttling
             time.sleep(1)
@@ -55,4 +61,3 @@ while True:
         logger.exception(str(identifier))
         # To manage throttling
         time.sleep(60)
-  

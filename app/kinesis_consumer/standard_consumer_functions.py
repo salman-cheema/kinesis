@@ -4,6 +4,7 @@ Functions for OCR JOB and it's response to mongodb
 import logging
 import json
 import grequests
+import time
 import requests
 import ocr_config as ocr_config
 import status_config as status_config
@@ -25,17 +26,18 @@ def ocr_service(msg):
     """
 
     try:
-        check_health = requests.get(url=ocr_config.OCR_PING_URL)
-        if check_health.status_code == const.HTTP_200_OK:
-            req = grequests.post(url=ocr_config.OCR_API_URL, data=msg)
-            grequests.send(req, grequests.Pool(1))
+        time.sleep(310)
+        # check_health = requests.get(url=ocr_config.OCR_PING_URL)
+        # if check_health.status_code == const.HTTP_200_OK:
+        #     req = grequests.post(url=ocr_config.OCR_API_URL, data=msg)
+        #     grequests.send(req, grequests.Pool(1))
 
-            get_response = const.OCR_JOB_SUBMITTED
-            logging.info(str(check_health.status_code))
-            logging.info(get_response)
-        else:
-            logging.error(str(check_health.status_code))
-            logging.error(const.OCR_JOB_URL_ERROR)
+        #     get_response = const.OCR_JOB_SUBMITTED
+        #     logging.info(str(check_health.status_code))
+        #     logging.info(get_response)
+        # else:
+        #     logging.error(str(check_health.status_code))
+        #     logging.error(const.OCR_JOB_URL_ERROR)
     except Exception as identifier:
         logging.error(const.OCR_JOB_NOT_SUBMITTED)
         logging.error(str(identifier))
@@ -133,6 +135,7 @@ def get_shard_iterators(stream_url, stream_name):
             # `_checkpoint.json`
             # are newly created and hence are read from the beginning.
             if shard not in shard_sequence_numbers:
+                logging.info(" NEW SHARD HAS BEEN ADDED IN KINESIS STREAM " + str(shard))
                 shard_sequence_numbers[shard] = ''
                 if stream_description is None:
                     stream_description = get_stream_description(stream_url)
@@ -148,10 +151,12 @@ def get_shard_iterators(stream_url, stream_name):
             # Read sequence number from file for the messages.
             if shard in shard_sequence_numbers:
                 if (shard_sequence_numbers[shard] != ""):
+                    logging.info(str(shard) + ' : is started after sequence number ' + str(shard_sequence_numbers[shard]))
                     res = get_shard_iterator(stream_url, shard,
                                              const.AFTER_SEQUENCE_NUMBER,
                                              shard_sequence_numbers[shard])
                 else:
+                    logging.info(str(shard) + ' : is started from latest state ')
                     res = get_shard_iterator(stream_url, shard)
 
             # latest if 'StartingSequenceNumber' invalid or not given.
